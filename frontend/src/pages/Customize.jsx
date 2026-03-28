@@ -11,7 +11,7 @@ import dummy7 from "../assets/dummy7.jpg"
 
 import { TiUpload } from "react-icons/ti";
 import {useRef} from "react"
-import { userDataContext } from '../context/userContext';
+import { userDataContext } from '../context/UserContext';
 import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { IoArrowBackOutline } from "react-icons/io5";
