@@ -1,7 +1,7 @@
 import React, { useState, useContext, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { userDataContext } from "../context/userContext";
+import { userDataContext } from "../context/UserContext";
 import ReCAPTCHA from "react-google-recaptcha";
 
 function SignUp() {
