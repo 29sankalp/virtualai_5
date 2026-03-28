@@ -4,7 +4,7 @@ import SignUp from './pages/SignUp'
 import SignIn from './pages/SignIn'
 import Customize from "./pages/Customize"
 import Customize2 from './pages/Customize2'
-import { userDataContext } from './context/userContext'
+import { userDataContext } from './context/UserContext'
 import Home from './pages/Home'
 import { useContext } from 'react'
 import { Navigate } from 'react-router-dom'
