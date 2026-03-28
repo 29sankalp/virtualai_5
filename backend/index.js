@@ -11,7 +11,7 @@ import youtubeRoutes from "./routes/youtubeRoutes.js";
 
 let app = express();
 app.use(cors({
-  origin:"http://localhost:5173",
+  origin:"https://virtualai-5.onrender.com",
   credentials:true
 })); 
  
