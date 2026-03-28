@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 export const userDataContext = createContext()
 
 function UserContext({children}) {
-  const serverUrl = "http://localhost:8000"
+  const serverUrl = "https://virtual-assistant-backend-r0f0.onrender.com"
   const [userData,setUserData] =useState(null)
   const [userText,setUserText]=useState("");
   const [aiText,setAiText]=useState("");
