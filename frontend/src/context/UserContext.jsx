@@ -1,67 +1,86 @@
-import { useState } from 'react'
+import { useState, createContext, useEffect } from "react";
 import axios from "axios";
-import { createContext } from "react";
-import { useEffect } from 'react';
 
-export const userDataContext = createContext()
+export const userDataContext = createContext();
 
-function UserContext({children}) {
-  const serverUrl = "http://localhost:8000"
-  const [userData,setUserData] =useState(null)
-  const [userText,setUserText]=useState("");
-  const [aiText,setAiText]=useState("");
-  const[frontendImage,setFrontendImage]=useState(null);
-  const[backendImage,setBackendImage]=useState(null);
-  const[selectedImage,setSelectedImage]= useState(null);
+function UserContext({ children }) {
+  const serverUrl = "http://localhost:8000";
 
-  const handleCurrentUser = async()=>{
+  const [userData, setUserData] = useState(null);
+  const [frontendImage, setFrontendImage] = useState(null);
+  const [backendImage, setBackendImage] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [loadingUser, setLoadingUser] = useState(true);
+
+  const handleCurrentUser = async () => {
     try {
-      const result = await axios.get(`${serverUrl}/api/user/current`,{withCredentials:true})
+      setLoadingUser(true);
+      const result = await axios.get(`${serverUrl}/api/user/current`, {
+        withCredentials: true,
+      });
       setUserData(result.data);
       console.log(result.data);
     } catch (error) {
-      console.log(error)
+      setUserData(null);
+      console.log(error);
+    } finally {
+      setLoadingUser(false);
     }
-  }
+  };
 
+  const getGeminiResponse = async (command) => {
+    try {
+      const result = await axios.post(
+        `${serverUrl}/api/user/asktoassistant`,
+        { command },
+        { withCredentials: true }
+      );
 
-const getGeminiResponse = async(command)=>{
-  try {
-    const result = await axios.post(
-      `${serverUrl}/api/user/asktoassistant`,
-      {command},
-      {withCredentials:true}
-    );
+      if (result?.data?.response && command?.trim()) {
+        setUserData((prev) => {
+          if (!prev) return prev;
 
-    return result.data;
+          const oldHistory = Array.isArray(prev.history) ? prev.history : [];
+          return {
+            ...prev,
+            history: [...oldHistory, command],
+          };
+        });
+      }
 
-  } catch (error) {
-    console.log(error);
+      return result.data;
+    } catch (error) {
+      console.log(error);
+      return {
+        response: "Sorry, I couldn't process that request.",
+      };
+    }
+  };
 
-    return {
-      response: "Sorry, I couldn't process that request."
-    };
-  }
-}
+  useEffect(() => {
+    handleCurrentUser();
+  }, []);
 
-
-
-  useEffect(()=>{
-    handleCurrentUser()
-  },[]);
-
-  const value={
-serverUrl,userData,setUserData,backendImage,setBackendImage,frontendImage,setFrontendImage, selectedImage,setSelectedImage,getGeminiResponse
-        }
+  const value = {
+    serverUrl,
+    userData,
+    setUserData,
+    backendImage,
+    setBackendImage,
+    frontendImage,
+    setFrontendImage,
+    selectedImage,
+    setSelectedImage,
+    getGeminiResponse,
+    loadingUser,
+    refreshUser: handleCurrentUser,
+  };
 
   return (
-<div>
-        <userDataContext.Provider value={value}>
-           {children}
-      </userDataContext.Provider>
-</div>
-
-)
+    <userDataContext.Provider value={value}>
+      {children}
+    </userDataContext.Provider>
+  );
 }
 
 export default UserContext;

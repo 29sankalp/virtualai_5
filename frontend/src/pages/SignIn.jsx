@@ -2,17 +2,10 @@ import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { userDataContext } from "../context/userContext";
-import { signInWithPopup } from "firebase/auth";
-import { auth, provider } from "../firebase";
-import { githubProvider } from "../firebase";
+
 import Robot3D from "../components/Robot3D";
 import BubbleReveal from "../components/BubbleReveal";
 
-import {
-  GithubAuthProvider,
-  fetchSignInMethodsForEmail,
-  linkWithCredential
-} from "firebase/auth";
 
 
 function SignIn() {
@@ -50,70 +43,6 @@ navigate("/customize");
   };
 
 
-  const handleGoogleLogin = async () => {
-  try {
-
-    const result = await signInWithPopup(auth, provider);
-    const user = result.user;
-
-    const response = await axios.post(
-      `${serverUrl}/api/auth/google`,
-      {
-        name: user.displayName,
-        email: user.email
-      },
-      { withCredentials: true }
-    );
-
-    setUserData(response.data);
-    navigate("/");
-
-  } catch (error) {
-    console.log(error);
-    setErr("Google login failed");
-  }
-};
-
-
-const handleGithubLogin = async () => {
-  try {
-    const result = await signInWithPopup(auth, githubProvider);
-    const user = result.user;
-
-    console.log("GitHub login success:", user);
-
-  } catch (error) {
-    console.log("GitHub login error:", error);
-
-    if (error.code === "auth/account-exists-with-different-credential") {
-      const email = error.customData.email;
-      const pendingCred = GithubAuthProvider.credentialFromError(error);
-
-      try {
-        const methods = await fetchSignInMethodsForEmail(auth, email);
-
-        if (methods.includes("google.com")) {
-          alert("This email is already registered with Google. Please continue with Google first.");
-
-          const googleResult = await signInWithPopup(auth, googleProvider);
-
-          await linkWithCredential(googleResult.user, pendingCred);
-
-          alert("GitHub account linked successfully!");
-        } else if (methods.includes("password")) {
-          alert("This email is already registered with email/password. Please login with email first, then link GitHub from profile settings.");
-        } else {
-          alert(`This email is already registered with: ${methods.join(", ")}`);
-        }
-      } catch (linkError) {
-        console.log("Linking error:", linkError);
-        alert("Could not link account.");
-      }
-    } else {
-      alert("GitHub login failed");
-    }
-  }
-};
   return (
 <BubbleReveal>
     <div className="flex h-screen w-full">
@@ -136,30 +65,7 @@ const handleGithubLogin = async () => {
           </p>
 
 
-          {/* GOOGLE BUTTON */}
-       <button
-type="button"
-onClick={handleGoogleLogin}
-className="w-full mt-8 h-12 rounded-full bg-gray-100 flex items-center justify-center"
->
-            <img
-              src="https://raw.githubusercontent.com/prebuiltui/prebuiltui/main/assets/login/googleLogo.svg"
-              alt="google"
-            />
-          </button>
-
-          <button
-  type="button"
-  onClick={handleGithubLogin}
-  className="w-full mt-4 h-12 rounded-full bg-gray-900 text-white flex items-center justify-center gap-2"
->
-  <img
-    src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
-    className="w-5"
-  />
-  Continue with GitHub
-</button>
-
+          
 
           {/* DIVIDER */}
           <div className="flex items-center gap-4 w-full my-6">

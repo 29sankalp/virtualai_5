@@ -77,17 +77,7 @@ navigate("/signIn");
           </p>
 
 
-          {/* GOOGLE BUTTON UI */}
-          <button
-            type="button"
-            className="w-full mt-8 h-12 rounded-full bg-gray-100 flex items-center justify-center"
-          >
-            <img
-              src="https://raw.githubusercontent.com/prebuiltui/prebuiltui/main/assets/login/googleLogo.svg"
-              alt="google"
-            />
-          </button>
-
+          
 
           {/* DIVIDER */}
           <div className="flex items-center gap-4 w-full my-6">

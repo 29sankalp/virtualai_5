@@ -1,4 +1,5 @@
 import React from 'react'
+import Dashboard from "./pages/Dashboard";
 import {Route,Routes} from "react-router-dom"
 import SignUp from './pages/SignUp'
 import SignIn from './pages/SignIn'
@@ -13,6 +14,7 @@ function App () {
   const {userData,setUserData} = useContext(userDataContext);
   return (
     <Routes>
+      <Route path="/" element={<Dashboard />} />
      <Route path='/' element={(userData?.assistantImage && userData?.assistantName)? <Home/> : <Navigate to={"/customize"}/>}/> 
       <Route path='/signUp' element={!userData?<SignUp/>:<Navigate to={"/"}/>}/>
       <Route path='/signIn' element={!userData?<SignIn/>:<Navigate to={"/"}/>}/>
